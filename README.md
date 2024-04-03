@@ -4,6 +4,3 @@ Liryo58 is a 6x4+5 keys handwired split keyboard based on the [Lily58](https://g
 
 # Firmware
 Liryo uses the [KMK Firmware](https://github.com/KMKfw/kmk_firmware/tree/master)
-
-# Firmware
-Liryo uses the [KMK Firmware](https://github.com/KMKfw/kmk_firmware/tree/master)
