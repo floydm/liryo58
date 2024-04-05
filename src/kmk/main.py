@@ -8,7 +8,7 @@ from kmk.keys import KC
 from kmk.scanners import DiodeOrientation
 
 # import modules
-from kmk.modules.layers import Layers
+from kmk.modules.layers import Layers as _Layers
 from kmk.modules.split import Split, SplitType, SplitSide
 from kmk.modules.combos import Combos, Chord, Sequence
 from kmk.modules.holdtap import HoldTap
@@ -54,34 +54,64 @@ split = Split(
     data_pin2=board.GP0,  # Second uart pin to allow 2 way communication
     use_pio=False,  # allows for UART to be used with PIO
 )
-layers = Layers()
-combos = Combos()
-holdtap = HoldTap()
-tapdance = TapDance()
 
-# RGB Stuff
+# RGB Layer Stuff
 sat = 255
 val = 5
 
 rgb = RGB(
     pixel_pin=board.GP23,
     num_pixels=1,
-    hue_default=130,
-    sat_default=sat,
-    val_default=val
+    hue_default=0,              # in range 0-255: 0/255-red, 85-green, 170-blue
+    sat_default=0,
+    val_default=0,
 )
+
+class Layers(_Layers):
+    last_top_layer = 0
+
+    def after_hid_send(self, keyboard):
+        if keyboard.active_layers[0] != self.last_top_layer:
+            self.last_top_layer = keyboard.active_layers[0]
+            if self.last_top_layer == 0:    # default
+                rgb.set_hsv_fill(0, 0, 0)       # off
+            elif self.last_top_layer == 1:  # lower
+                rgb.set_hsv_fill(0, 0, val)     # white
+            elif self.last_top_layer == 2:  # raise
+                rgb.set_hsv_fill(0, sat, val)   # red
+            elif self.last_top_layer == 3:  # gaming
+                rgb.set_hsv_fill(120, 255, 10)  # blue
+            rgb.show()
+                
+layers = Layers()
+combos = Combos()
+holdtap = HoldTap()
+tapdance = TapDance()
+
+# Combos
+combos.combos = [
+    Sequence((KC.ESC, KC.N1), KC.TG(3)),     # Toggle Layer 3 (Gaming)
+    Sequence((KC.ESC, KC.N2), KC.TG(4)),     # Toggle Layer 4
+    Sequence((KC.ESC, KC.N3), KC.TG(5)),     # Toggle Layer 5
+    Sequence((KC.ESC, KC.N4), KC.TG(6)),     # Toggle Layer 6
+    Sequence((KC.ESC, KC.N5), KC.TG(7)),     # Toggle Layer 7
+]
+
+# Tap Dances
+# - To be added
 
 # Append extensions and modules
 keyboard.extensions = [rgb]
 keyboard.modules = [layers, split, combos, holdtap, tapdance]
 
+# Key Stuff
 XXXXXXX = KC.NO
 _______ = KC.TRNS
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
 
 keyboard.keymap = [
-    [  # QWERTY
+    [  # 0 - QWERTY
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.BSPC,
         KC.TAB,   KC.Q,     KC.W,     KC.E,     KC.R,     KC.T,                                             KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,     KC.MINS,
@@ -89,7 +119,7 @@ keyboard.keymap = [
         KC.LSFT,  KC.Z,     KC.X,     KC.C,     KC.V,     KC.B,                                             KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,  KC.RSFT,
                             KC.LCTL,  KC.LALT,  KC.LGUI,  LOWER,    KC.SPC,                       KC.ENT,   RAISE,    KC.RGUI,  KC.RALT,  KC.RCTL,
     ],
-    [  #LOWER
+    [  # 1 - LOWER
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         XXXXXXX,  KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,                                            KC.F6,    KC.F7,    KC.F8,    KC.F9,    KC.F10,   KC.F11,
         KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.F12,
@@ -97,7 +127,7 @@ keyboard.keymap = [
         XXXXXXX,  KC.EQL,   KC.MINS,  KC.PLUS,  KC.LCBR,  KC.RCBR,                                          KC.LBRC,  KC.RBRC,  KC.SCLN,  KC.COLN,  KC.BSLS,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
-    [  #RAISE
+    [  # 2 - RAISE
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
@@ -105,14 +135,45 @@ keyboard.keymap = [
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
-    [   #GAMING
+    [   # 3 - GAMING
         KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.DEL,
         KC.TAB,   KC.Z,     KC.Q,     KC.W,     KC.E,     KC.R,                                             KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,     KC.BSPC,
         KC.ESC,   KC.A,     KC.A,     KC.S,     KC.D,     KC.F,                                             KC.H,     KC.J,     KC.K,     KC.L,     KC.SCLN,  KC.QUOT,
         KC.LSFT,  KC.LCTL,  KC.X,     KC.C,     KC.V,     KC.B,                                             KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,  KC.RSFT,
                             LOWER,    KC.LCTL,  KC.LALT,  KC.G,     KC.SPC,                       KC.ENT,   RAISE,    KC.RGUI,  KC.RALT,  KC.RCTL,
+    ],
+    [  # 4 - 
+        # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
+    ],
+    [  # 5 - 
+        # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
+    ],
+    [  # 6 - 
+        # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
+    ],
+    [  # 7 - 
+        # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ]
-
 ]
 keyboard.debug_enabled = False
 
@@ -123,4 +184,3 @@ print("Loaded")
 
 if __name__ == '__main__':
     keyboard.go()
-
