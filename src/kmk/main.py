@@ -73,32 +73,27 @@ class Layers(_Layers):
     def after_hid_send(self, keyboard):
         if keyboard.active_layers[0] != self.last_top_layer:
             self.last_top_layer = keyboard.active_layers[0]
-            if self.last_top_layer == 0:    # default
-                rgb.set_hsv_fill(0, 0, 0)       # off
-            elif self.last_top_layer == 1:  # lower
-                rgb.set_hsv_fill(0, 0, val)     # white
-            elif self.last_top_layer == 2:  # raise
-                rgb.set_hsv_fill(0, sat, val)   # red
-            elif self.last_top_layer == 3:  # gaming
-                rgb.set_hsv_fill(120, 255, 10)  # blue
+            if self.last_top_layer == 0:  # default
+                rgb.set_hsv_fill(0, 0, 0)
+                print('Default Layer')
+            elif self.last_top_layer == 1:
+                rgb.set_hsv_fill(0, 0, val) # white
+                print('Lower Layer')
+            elif self.last_top_layer == 2:
+                rgb.set_hsv_fill(0, sat, val)  # red
+                print('Raise Layer')
+            elif self.last_top_layer == 3:
+                rgb.set_hsv_fill(120, 255, 10)     # blue
+                print('Gaming Layer')
+            elif self.last_top_layer == 4:
+                rgb.set_hsv_fill(70, 255, 10)     # yellow
+                print('Function Layer')
             rgb.show()
                 
 layers = Layers()
 combos = Combos()
 holdtap = HoldTap()
 tapdance = TapDance()
-
-# Combos
-combos.combos = [
-    Sequence((KC.ESC, KC.N1), KC.TG(3)),     # Toggle Layer 3 (Gaming)
-    Sequence((KC.ESC, KC.N2), KC.TG(4)),     # Toggle Layer 4
-    Sequence((KC.ESC, KC.N3), KC.TG(5)),     # Toggle Layer 5
-    Sequence((KC.ESC, KC.N4), KC.TG(6)),     # Toggle Layer 6
-    Sequence((KC.ESC, KC.N5), KC.TG(7)),     # Toggle Layer 7
-]
-
-# Tap Dances
-# - To be added
 
 # Append extensions and modules
 keyboard.extensions = [rgb]
@@ -109,6 +104,19 @@ XXXXXXX = KC.NO
 _______ = KC.TRNS
 LOWER = KC.MO(1)
 RAISE = KC.MO(2)
+FUNCTION_LYR = KC.MO(4)
+
+# Combos
+combos.combos = [
+    Sequence((KC.ESC, KC.N1), KC.TG(3)),     # Toggle Layer 3 (Gaming)
+]
+
+# Tap Dances
+FUNCTION_TD = KC.TD(
+    LOWER,
+    FUNCTION_LYR,
+    KC.TG(3)
+)
 
 keyboard.keymap = [
     [  # 0 - QWERTY
@@ -117,60 +125,60 @@ keyboard.keymap = [
         KC.TAB,   KC.Q,     KC.W,     KC.E,     KC.R,     KC.T,                                             KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,     KC.MINS,
         KC.ESC,   KC.A,     KC.S,     KC.D,     KC.F,     KC.G,                                             KC.H,     KC.J,     KC.K,     KC.L,     KC.SCLN,  KC.QUOT,
         KC.LSFT,  KC.Z,     KC.X,     KC.C,     KC.V,     KC.B,                                             KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,  KC.RSFT,
-                            KC.LCTL,  KC.LALT,  KC.LGUI,  LOWER,    KC.SPC,                       KC.ENT,   RAISE,    KC.RGUI,  KC.RALT,  KC.RCTL,
+                            KC.LCTL,  KC.LALT,  KC.LGUI,  FUNCTION_TD,    KC.SPC,                       KC.ENT,   RAISE,    KC.RGUI,  KC.RALT,  KC.RCTL,
     ],
     [  # 1 - LOWER
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         XXXXXXX,  KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,                                            KC.F6,    KC.F7,    KC.F8,    KC.F9,    KC.F10,   KC.F11,
         KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.F12,
         XXXXXXX,  KC.EXLM,  KC.AT,    KC.HASH,  KC.DLR,   KC.PERC,                                          KC.CIRC,  KC.AMPR,  KC.ASTR,  KC.LPRN,  KC.RPRN,  KC.PIPE,
-        XXXXXXX,  KC.EQL,   KC.MINS,  KC.PLUS,  KC.LCBR,  KC.RCBR,                                          KC.LBRC,  KC.RBRC,  KC.SCLN,  KC.COLN,  KC.BSLS,  XXXXXXX,
+        XXXXXXX,  KC.EQL,   KC.MINS,  KC.PLUS,  KC.LCBR,  KC.RCBR,                                          KC.LBRC,  KC.RBRC,  KC.SCLN,  KC.COLN,  KC.BSLS,  KC.PSCR,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
-    [  # 2 - RAISE
+    [  # 2 - RAISE - Navigation
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.NLCK,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.PSLS,  KC.PAST,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
+        KC.TAB,   XXXXXXX,  KC.KP_7,  KC.KP_8,  KC.KP_9,  KC.PMNS,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
+        KC.ESC,   XXXXXXX,  KC.KP_4,  KC.KP_5,  KC.KP_6,  KC.PPLS,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  KC.KP_0,  KC.KP_1,  KC.KP_2,  KC.KP_3,  KC.PDOT,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.PSCR,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
     [   # 3 - GAMING
-        KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            KC.N6,    KC.N7,    KC.N8,    KC.N9,    KC.N0,    KC.DEL,
-        KC.TAB,   KC.Z,     KC.Q,     KC.W,     KC.E,     KC.R,                                             KC.Y,     KC.U,     KC.I,     KC.O,     KC.P,     KC.BSPC,
-        KC.ESC,   KC.A,     KC.A,     KC.S,     KC.D,     KC.F,                                             KC.H,     KC.J,     KC.K,     KC.L,     KC.SCLN,  KC.QUOT,
-        KC.LSFT,  KC.LCTL,  KC.X,     KC.C,     KC.V,     KC.B,                                             KC.N,     KC.M,     KC.COMM,  KC.DOT,   KC.SLSH,  KC.RSFT,
-                            LOWER,    KC.LCTL,  KC.LALT,  KC.G,     KC.SPC,                       KC.ENT,   RAISE,    KC.RGUI,  KC.RALT,  KC.RCTL,
+        KC.GRV,   KC.N1,    KC.N2,    KC.N3,    KC.N4,    KC.N5,                                            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.T,     KC.N6,    KC.Q,     KC.W,     KC.E,     KC.R,                                             XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.ESC,   KC.LSFT,  KC.A,     KC.S,     KC.D,     KC.F,                                             XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.B,     KC.LCTL,  KC.Z,     KC.X,     KC.C,     KC.V,                                             XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            FUNCTION_TD,    KC.TAB,   KC.LALT,  KC.G,     KC.SPC,                       KC.ENT,   RAISE,    XXXXXXX,  XXXXXXX,  XXXXXXX,
     ],
-    [  # 4 - 
+    [  # 4 - Functions
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,    KC.F6,                                            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.F7,    KC.F8,    KC.F9,    KC.F10,   KC.F11,   KC.F12,                                           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.F13,   KC.F14,   KC.F15,   KC.F16,   KC.F17,   KC.F18,                                           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC.F19,   KC.F20,   KC.F21,   KC.F22,   KC.F23,   KC.F24,                                           XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
     [  # 5 - 
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
     [  # 6 - 
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
     [  # 7 - 
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          KC.PGDN,  KC.LEFT,  KC.DOWN,  KC.RGHT,   KC.DEL,  KC.BSPC,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ]
