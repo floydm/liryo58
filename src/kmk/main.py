@@ -182,4 +182,3 @@ print("Loaded")
 
 if __name__ == '__main__':
     keyboard.go()
-
