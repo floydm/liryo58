@@ -109,7 +109,6 @@ keyboard.keymap = [
                             _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,
     ],
     [  # 2 - RAISE - Navigation
-    [  # 2 - RAISE - Navigation
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         KC.NLCK,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.PSLS,  KC.PAST,                                          XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC.DEL,
         KC.TAB,   XXXXXXX,  KC.KP_7,  KC.KP_8,  KC.KP_9,  KC.PMNS,                                          KC.PGUP,  KC.HOME,    KC.UP,   KC.END,  XXXXXXX,  KC.BSPC,
@@ -128,7 +127,6 @@ keyboard.keymap = [
         KC.B,     KC.LCTL,  KC.Z,     KC.X,     KC.C,     KC.V,                                             XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             FUNCTION_TD,    KC.TAB,   KC.LALT,  KC.G,     KC.SPC,                 KC.ENT,   RAISE,    XXXXXXX,  XXXXXXX,  XXXXXXX,
     ],
-    [  # 4 - Functions
     [  # 4 - Functions
         # HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----#ENCODER--#ENCODER--# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----# HERE----
         KC.F1,    KC.F2,    KC.F3,    KC.F4,    KC.F5,    KC.F6,                                            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
