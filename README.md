@@ -3,8 +3,8 @@ Liryo58 is a 6x4_5 keys handwired split keyboard based on the [Lily58](https://g
 
 ![Liry58 Picture](https://raw.githubusercontent.com/floydm/liryo58/main/files/liryo58.jpeg)
 
-# Firmware
-Liryo uses the [KMK Firmware](https://github.com/KMKfw/kmk_firmware/tree/master)
+Liryo, named after the Tagalog word for ‘Lily,’ draws inspiration from two of my favorite split keyboard designs: the Lily58 and the Sofle. My handwired version of the [TBK-Mini](https://github.com/Bastardkb/TBK-Mini) served me well, but I longed for a number row and additional thumb keys. This project provided the perfect chance to create a keyboard tailored to my preferences. And voilà, here she is!
 
 ## Updates:
-- Added QMK and VIAL Support
+- Added [QMK](https://qmk.fm/) Support
+- Added [VIAL](https://get.vial.today/) Support
