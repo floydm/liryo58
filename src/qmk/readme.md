@@ -5,16 +5,16 @@
 *A short description of the keyboard/project*
 
 * Keyboard Maintainer: [Floyd Maloto](https://github.com/floydm)
-* Hardware Supported: *The PCBs, controllers supported*
-* Hardware Availability: *Links to where you can find this hardware*
+* Hardware Supported: YD-RP2040, Pi Pico
+* Hardware Availability: https://github.com/floydm/liryo58
 
 Make example for this keyboard (after setting up your build environment):
 
-    make handwired/floydm/liryo58:default
+    qmk compile -kb handwired/floydm/liryo58 -km default
 
 Flashing example for this keyboard:
 
-    make handwired/floydm/liryo58:default:flash
+    qmk flash -kb handwired/floydm/liryo58 -km default -bl uf2-split-left
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
 
