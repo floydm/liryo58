@@ -1,8 +1,6 @@
-# handwired/floydm/liryo58
+# Liryo58
 
-![handwired/floydm/liryo58](imgur.com image replace me!)
-
-*A short description of the keyboard/project*
+QMK Port for the Liryo58 keyboard using the YD-RP2040
 
 * Keyboard Maintainer: [Floyd Maloto](https://github.com/floydm)
 * Hardware Supported: YD-RP2040, Pi Pico
