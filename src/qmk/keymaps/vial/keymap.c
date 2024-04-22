@@ -68,3 +68,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                           _______,  _______,  _______,  _______,  _______,                  _______,  _______,  _______,  _______,  _______
     )
 };
+
+void matrix_init_user(void) {
+  rgblight_enable();
+  rgblight_mode(1);
+  rgblight_sethsv(0,0,0);
+};
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case 1:
+        rgblight_sethsv (127,  255, 10);  // Cyan
+        break;
+    case 2:
+        rgblight_sethsv (106,  255, 10);  // Spring Green
+        break;
+    case 3:
+        rgblight_sethsv (43,  255, 10); // Yellow
+        break;
+    case 4:
+        rgblight_sethsv (148,  255, 10); // Azure
+        break;
+    case 5:
+        rgblight_sethsv (21,  255, 10); // Orange
+        break;
+    case 6:
+        rgblight_sethsv (0,  255, 10); // Red
+        break;
+    case 7:
+        rgblight_sethsv (180,  255, 10); // Violet
+        break;
+    default: //  for any other layers, or the default layer
+        rgblight_sethsv (0, 0, 0);
+        break;
+    }
+  return state;
+};

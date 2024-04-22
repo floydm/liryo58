@@ -6,9 +6,6 @@
       "rows": 10,
       "cols": 6
     },
-    "lighting": {
-      "extends": "qmk_rgblight"
-    },
     "layouts": {
       "keymap": [
         [

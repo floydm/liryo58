@@ -34,13 +34,12 @@
         }
     },
     "rgblight": {
-        "animations": {},
-        "led_count": 1,
+        "led_count": 2,
         "split": true,
         "split_count": [1, 1],
         "default": {
-            "hue": 222,
-            "val": 63
+            "hue": 127,
+            "val": 10
         },
         "driver": "ws2812"
     },

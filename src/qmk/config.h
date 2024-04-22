@@ -8,6 +8,12 @@
 #define SERIAL_USART_TX_PIN GP0     // USART TX pin
 #define SERIAL_USART_RX_PIN GP1     // USART RX pin
 
+#define RGBLIGHT_LAYERS
+/*
+#define BACKLIGHT_LED_COUNT 1
+#define BACKLIGHT_PIN GP23
+*/
+
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.
