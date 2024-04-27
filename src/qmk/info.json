@@ -1,6 +1,6 @@
 {
-    "manufacturer": "Floyd Maloto",
-    "keyboard_name": "liryo58",
+    "manufacturer": "FMM",
+    "keyboard_name": "Liryo58",
     "maintainer": "floydm",
     "url": "",
     "bootloader": "rp2040",
@@ -26,7 +26,7 @@
                 "layer_state": true
             },
             "watchdog": true,
-            "watchdog_timeout": 5000
+            "watchdog_timeout": 3000
         },
         "usb_detect": {
             "enabled": true,
@@ -38,7 +38,8 @@
         "split": true,
         "split_count": [1, 1],
         "default": {
-            "hue": 127,
+            "hue": 169,
+            "sat": 255,
             "val": 10
         },
         "driver": "ws2812"

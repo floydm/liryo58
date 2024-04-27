@@ -69,38 +69,84 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-void matrix_init_user(void) {
-  rgblight_enable();
-  rgblight_mode(1);
-  rgblight_sethsv(0,0,0);
-};
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LSFT_T(KC_SPC):
+            return TAPPING_TERM + 1250;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
+void keyboard_post_init_user(void) {
+  // Call the post init code.
+  rgblight_enable_noeeprom(); // enables Rgb, without saving settings
+  rgblight_sethsv_noeeprom(169, 255, 10); // sets the color to teal/cyan without saving
+}
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
     case 1:
-        rgblight_sethsv (127,  255, 10);  // Cyan
+        rgblight_sethsv_noeeprom (127,  255, 10);  // Cyan
         break;
     case 2:
-        rgblight_sethsv (106,  255, 10);  // Spring Green
+        rgblight_sethsv_noeeprom (106,  255, 10);  // Spring Green
         break;
     case 3:
-        rgblight_sethsv (43,  255, 10); // Yellow
+        rgblight_sethsv_noeeprom (43,  255, 10); // Yellow
         break;
     case 4:
-        rgblight_sethsv (148,  255, 10); // Azure
+        rgblight_sethsv_noeeprom (148,  255, 10); // Azure
         break;
     case 5:
-        rgblight_sethsv (21,  255, 10); // Orange
+        rgblight_sethsv_noeeprom (21,  255, 10); // Orange
         break;
     case 6:
-        rgblight_sethsv (0,  255, 10); // Red
+        rgblight_sethsv_noeeprom (0,  255, 10); // Red
         break;
     case 7:
-        rgblight_sethsv (180,  255, 10); // Violet
+        rgblight_sethsv_noeeprom (180,  255, 10); // Violet
         break;
     default: //  for any other layers, or the default layer
-        rgblight_sethsv (0, 0, 0);
+        rgblight_sethsv_noeeprom(169, 255, 10);
         break;
     }
   return state;
 };
+
+void refresh_rgb(void) {
+    key_timer = timer_read32(); // store time of last refresh
+    if (is_rgb_timeout)
+    {
+        is_rgb_timeout = false;
+        rgblight_wakeup();
+    }
+}
+void check_rgb_timeout(void) {
+    if (!is_rgb_timeout && timer_elapsed32(key_timer) > RGBLIGHT_TIMEOUT) // check if RGB has already timeout and if enough time has passed
+    {
+        rgblight_suspend();
+        is_rgb_timeout = true;
+    }
+}
+/* Then, call the above functions from QMK's built in post processing functions like so */
+/* Runs at the end of each scan loop, check if RGB timeout has occured or not */
+void housekeeping_task_user(void) {
+#ifdef RGBLIGHT_TIMEOUT
+    check_rgb_timeout();
+#endif
+}
+/* Runs after each key press, check if activity occurred */
+void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef RGBLIGHT_TIMEOUT
+    if (record->event.pressed)
+        refresh_rgb();
+#endif
+}
+/* Runs after each encoder tick, check if activity occurred */
+void post_encoder_update_user(uint8_t index, bool clockwise) {
+#ifdef RGBLIGHT_TIMEOUT
+    refresh_rgb();
+#endif
+}
+
